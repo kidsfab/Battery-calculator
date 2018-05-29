@@ -1,0 +1,278 @@
+<head>
+	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<script type="text/javascript">
+	jQuery('document').ready(function(){
+    jQuery('input').on('keyup', function(){
+        
+        //declare variables
+        var motorVolt, motorCurr, motorNum, motorPerc, 
+        sensVolt, sensCurr, contrVolt, contrCurr, regulLoss, 
+        battVolt,battMah, battNum, powerTotal, minbattVolt, 
+        motorIdleTime, minTime, typTime
+        
+        //read input
+        motorVolt = jQuery('#motorVolt').val();
+        motorCurr = jQuery('#motorCurr').val();
+        motorNum = jQuery('#motorNum').val();
+        motorPerc = jQuery('#motorPerc').val();
+        sensVolt = jQuery('#sensVolt').val();
+        sensCurr = jQuery('#sensCurr').val();
+        contrVolt = jQuery('#contrVolt').val();
+        contrCurr = jQuery('#contrCurr').val();
+        regulLoss = jQuery('#regulLoss').val();
+        battVolt = jQuery('#battVolt').val();
+        battMah = jQuery('#battMah').val();
+        battNum = jQuery('#battNum').val();
+		
+		//translate to Float
+        motorVolt = parseFloat(motorVolt);
+        motorCurr = parseFloat(motorCurr);
+        motorNum = parseFloat(motorNum);
+        motorPerc = parseFloat(motorPerc);
+        sensVolt = parseFloat(sensVolt);
+        sensCurr = parseFloat(sensCurr);
+        contrVolt = parseFloat(contrVolt);
+        contrCurr = parseFloat(contrCurr);
+        regulLoss = parseFloat(regulLoss);
+        battVolt = parseFloat(battVolt);
+        battMah = parseFloat(battMah);
+        battNum = parseFloat(battNum);
+        
+        //calculate 
+        minbattVolt = Math.max(motorVolt, sensVolt, contrVolt) + regulLoss;
+        powerTotal = Math.round(((battVolt * motorCurr * motorNum * motorPerc / 100) + (battVolt * sensCurr) + (battVolt * contrCurr))*100)/100; 
+        motorIdleTime = Math.round(((battMah * battNum * .001)/(sensCurr + contrCurr))*100) / 100;
+        minTime = Math.round(((battMah * battNum * .001)/((motorCurr * motorNum) + sensCurr + contrCurr))*100)/100;
+        typTime = Math.round(((battMah * battNum * .001)/((motorCurr * motorNum * motorPerc / 100) + sensCurr + contrCurr))*100)/100;
+        
+        //write
+        jQuery('#minbattVolt').html(minbattVolt);
+		jQuery('#powerTotal').html(powerTotal);
+		jQuery('#motorIdleTime').html(motorIdleTime);
+		jQuery('#minTime').html(minTime);
+		jQuery('#typTime').html(typTime);
+    });
+});
+
+	
+	</script>
+	Калькулятор батареи для робота
+	<br/>
+	
+</head>
+
+<body>
+	<br/>
+	Информацию о потреблении тока и рабочем напряжении того или иного
+	устройства вы можете найти либо в его технических характеристиках, 
+	либо измерив их с помощью мультиметра в работающей цепи. 
+	<br/>
+	<br/>
+	Моторы
+	<table>
+		<tr>
+			<td>
+				Рабочее напряжение моторов
+			</td>
+			<td>
+				<input id="motorVolt" type = "number" value = "5" /></input>
+			</td>
+			<td>
+				Вольт
+			</td>
+		</tr>
+		<tr>
+			<td>
+				Ток потребления мотором
+			</td>
+			<td>
+				<input id="motorCurr" type = "number" value="0.5"/></input>
+			</td>
+			<td>
+				Ампер
+			</td>
+		</tr>
+		<tr>
+			<td>
+				Количество моторов
+			</td>
+			<td>
+				<input id="motorNum" type = "number" value = "2"/></input>
+			</td>
+			<td>
+				Штук(а)
+			</td>
+		</tr>
+		<tr>
+			<td>
+				Процент времени работы моторов
+			</td>
+			<td>
+				<input id="motorPerc" type = "number" value = "30"/></input>
+			</td>
+			<td>
+				%
+			</td>
+		</tr>
+
+	</table>
+		<br/>
+	Электроника
+	<table>
+		<tr>
+			<td>
+				Рабочее напряжение сенсоров
+			</td>
+			<td>
+				<input id="sensVolt" type = "number" value = "5"/></input>
+			</td>
+			<td>
+				Вольт
+			</td>
+		</tr>
+		<tr>
+			<td>
+				Ток потребления сенсорами
+			</td>
+			<td>
+				<input id="sensCurr" type = "number" value = "0.2" /></input>
+			</td>
+			<td>
+				Ампер
+			</td>
+		</tr>
+		<tr>
+			<td>
+				Рабочее напряжение контроллера
+			</td>
+			<td>
+				<input id="contrVolt" type = "number" value = "5" /></input>
+			</td>
+			<td>
+				Вольт
+			</td>
+		</tr>
+		<tr>
+			<td>
+				Ток потребления контроллером
+			</td>
+			<td>
+				<input id="contrCurr" type = "number" value = "0.3" /></input>
+			</td>
+			<td>
+				Ампер
+			</td>
+		</tr>
+		<tr>
+			<td>
+				Потери на регуляторе напряжения
+			</td>
+			<td>
+				<input id="regulLoss" type = "number" value = "1"/></input>
+			</td>
+			<td>
+				Вольт
+			</td>
+		</tr>
+
+	</table>
+	<br/>
+	Батарея
+	<table>
+		<tr>
+			<td>
+				Напряжение блока батарей
+			</td>
+			<td>
+				<input id="battVolt" type = "number" value = "6"/></input>
+			</td>
+			<td>
+				Вольт
+			</td>
+		</tr>
+		<tr>
+			<td>
+				Энергоемкость блока батарей
+			</td>
+			<td>
+				<input id="battMah" type = "number" value = "2000"/></input>
+			</td>
+			<td>
+				мА*ч
+			</td>
+		</tr>
+		<tr>
+			<td>
+				Кол-во блоков подключенных параллельно
+			</td>
+			<td>
+				<input id="battNum" type = "number" value = "1"/></input>
+			</td>
+			<td>
+				Кол-во
+			</td>
+		</tr>
+
+	</table>
+	<br/>
+	Результат
+	<table>
+		<tr>
+			<td>
+				Общая мощность
+			</td>
+			<td id="powerTotal">
+				4.8
+			</td>
+			<td>
+				Ватт
+			</td>
+		</tr>
+		<tr>
+			<td>
+				Минимальное напряжение батареи
+			</td>
+			<td id="minbattVolt" >
+				6
+			</td>
+			<td>
+				Вольт
+			</td>
+		</tr>
+		<tr>
+			<td>
+				Время работы с выключенными моторами
+			</td>
+			<td id="motorIdleTime"> 
+				4
+			</td>	
+			<td>
+				Час(ов)
+			</td>
+		</tr>
+		<tr>
+			<td>
+				Минимальное время работы
+			</td>
+			<td id="minTime">
+				1.33
+			</td>
+			<td>
+				Час(ов)
+			</td>
+		</tr>
+		<tr>
+			<td>
+				Ожидаемое время работы
+			</td>
+			<td id="typTime">
+				2.5
+			</td>
+			<td>
+				Час(ов)
+			</td>
+		</tr>
+
+
+	</table>
+</body>
